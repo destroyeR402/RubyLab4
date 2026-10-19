@@ -1,24 +1,27 @@
-# README
+# Sample App
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+The sample application from Michael Hartl's
+[*Ruby on Rails Tutorial: Learn Web Development with Rails*](https://www.railstutorial.org/),
+chapter 3 — "Mostly static pages".
 
-Things you may want to cover:
+## What's here
 
-* Ruby version
+- A `StaticPagesController` with `home`, `help`, `about` and `contact` actions.
+- Shared site layout (`app/views/layouts/application.html.erb`); each page sets
+  its own title with `provide(:title, ...)`, rendered as
+  `"<Page> | Ruby on Rails Tutorial Sample App"`.
+- `root` routes to `static_pages#home`.
+- Controller tests for every page, written test-first (Red → Green → Refactor).
 
-* System dependencies
+## Requirements
 
-* Configuration
+- Ruby 3.4.10 (see `.ruby-version`)
+- Rails 8.1
 
-* Database creation
+## Getting started
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+```sh
+bundle install
+bin/rails test     # run the test suite
+bin/rails server   # http://localhost:3000
+```
