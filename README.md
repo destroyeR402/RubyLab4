@@ -1,31 +1,51 @@
-# Sample App
+# Sample App — лабораторная работа 4
 
-The sample application from Michael Hartl's
-[*Ruby on Rails Tutorial: Learn Web Development with Rails*](https://www.railstutorial.org/),
-chapters 3–4 — "Mostly static pages" and "Rails-flavored Ruby".
+**Тема:** «Rails-приправленный Ruby» (глава 4 книги Michael Hartl,
+[*Ruby on Rails Tutorial*](https://www.railstutorial.org/)).
+Текст задания — `part 4.odt`. Проект продолжает лабораторную 3
+(история коммитов сохранена).
 
-## What's here
+## Задание
 
-- A `StaticPagesController` with `home`, `help`, `about` and `contact` actions.
-- Shared site layout (`app/views/layouts/application.html.erb`); each page sets
-  its own title with `provide(:title, ...)`, rendered as
-  `"<Page> | Ruby on Rails Tutorial Sample App"`.
-- `root` routes to `static_pages#home`.
-- A `full_title` helper (`ApplicationHelper`) that falls back to the base title
-  when a page does not provide its own.
-- Plain-Ruby exercises from chapter 4 in `lib/` (`ExampleUser`, `StringTools`)
-  and `String#palindrome?` / `String#shuffle` core extensions, all unit-tested.
-- Controller tests for every page, written test-first (Red → Green → Refactor).
+- написать хелпер `full_title`, чтобы страница без своего заголовка
+  получала базовый «Ruby on Rails Tutorial Sample App» без лишней `|`;
+- изучить строки, методы, массивы, диапазоны, блоки, хэши, символы, классы;
+- написать класс пользователя с `attr_accessor` и `formatted_email`;
+- упражнения 4.6.1–4.6.4.
 
-## Requirements
+## Что сделано (ветка `rails-flavored-ruby`)
 
-- Ruby 3.4.10 (see `.ruby-version`)
-- Rails 8.1
+### Хелпер `full_title`
+| Шаг | Тесты |
+|---|---|
+| `test/helpers/application_helper_test.rb` — тесты хелпера | КРАСНЫЙ |
+| `ApplicationHelper#full_title` (аргумент по умолчанию, тернарный оператор, интерполяция) | ЗЕЛЁНЫЙ |
+| Макет: `<title><%= full_title(yield(:title)) %></title>`; тест Home ждёт только базовый заголовок | КРАСНЫЙ |
+| Из `home.html.erb` убран `provide(:title, "Home")` | ЗЕЛЁНЫЙ |
 
-## Getting started
+### Класс пользователя — `lib/example_user.rb`
+Класс назван `ExampleUser`, а не `User`, чтобы не конфликтовать с моделью
+`User` из следующих глав, и оставлен в проекте вместе с тестами
+`test/lib/example_user_test.rb`: атрибуты по умолчанию `nil`, присваивание
+через аксессоры, создание из хэша, `formatted_email`.
+
+### Упражнения
+| № | Решение | Где |
+|---|---|---|
+| 4.6.1 | `StringTools.string_shuffle(s)` → `s.split("").shuffle.join` | `lib/string_tools.rb` |
+| 4.6.2 | `String#shuffle` (+ `String#palindrome?` из 4.4.3) | `config/initializers/string_extensions.rb` |
+| 4.6.3 | `params[:father]`, `[:mother]`, `[:child]` — вложенные хэши `{first:, last:}` | `test/lib/hash_exercises_test.rb` |
+| 4.6.4 | `{"a"=>100,"b"=>200}.merge({"b"=>300})` → `{"a"=>100,"b"=>300}`: при совпадении ключей побеждает значение из аргумента | `test/lib/hash_exercises_test.rb` |
+
+Все упражнения проверяются тестами (`test/lib/string_tools_test.rb` и др.).
+
+## Запуск
 
 ```sh
 bundle install
-bin/rails test     # run the test suite
+bin/rails test     # 14 tests, 29 assertions, 0 failures, 0 errors
 bin/rails server   # http://localhost:3000
+bin/rails console  # >> ExampleUser.new(name: "A", email: "a@b.c").formatted_email
 ```
+
+Окружение: Ruby 3.4.10, Rails 8.1.
