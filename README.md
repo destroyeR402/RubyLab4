@@ -2,7 +2,7 @@
 
 The sample application from Michael Hartl's
 [*Ruby on Rails Tutorial: Learn Web Development with Rails*](https://www.railstutorial.org/),
-chapter 3 — "Mostly static pages".
+chapters 3–4 — "Mostly static pages" and "Rails-flavored Ruby".
 
 ## What's here
 
@@ -11,6 +11,10 @@ chapter 3 — "Mostly static pages".
   its own title with `provide(:title, ...)`, rendered as
   `"<Page> | Ruby on Rails Tutorial Sample App"`.
 - `root` routes to `static_pages#home`.
+- A `full_title` helper (`ApplicationHelper`) that falls back to the base title
+  when a page does not provide its own.
+- Plain-Ruby exercises from chapter 4 in `lib/` (`ExampleUser`, `StringTools`)
+  and `String#palindrome?` / `String#shuffle` core extensions, all unit-tested.
 - Controller tests for every page, written test-first (Red → Green → Refactor).
 
 ## Requirements
