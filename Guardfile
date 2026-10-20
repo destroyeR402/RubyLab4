@@ -1,42 +1,37 @@
-# A sample Guardfile
-# More info at https://github.com/guard/guard#readme
-
-## Uncomment and set this to only include directories you want to watch
-# directories %w(app lib config test spec features) \
-#  .select{|d| Dir.exist?(d) ? d : UI.warning("Directory #{d} does not exist")}
-
-## Note: if you are using the `directories` clause above and you are not
-## watching the project directory ('.'), then you will want to move
-## the Guardfile to a watched dir and symlink it back, e.g.
+# Guard watches the project and re-runs only the tests affected by a change.
+#   bundle exec guard        # start; press Enter to run all tests, Ctrl-D to quit
 #
-#  $ mkdir config
-#  $ mv Guardfile config/
-#  $ ln -s config/Guardfile .
-#
-# and, you'll have to watch "config/Guardfile" instead of "Guardfile"
+# Adapted from Listing 3.42 of the Rails Tutorial for a Rails 8 app
+# (no Spring, controller tests live in test/controllers).
 
-guard :minitest do
-  # with Minitest::Unit
-  watch(%r{^test/(.*)\/?test_(.*)\.rb$})
-  watch(%r{^lib/(.*/)?([^/]+)\.rb$})     { |m| "test/#{m[1]}test_#{m[2]}.rb" }
-  watch(%r{^test/test_helper\.rb$})      { 'test' }
+guard :minitest, all_on_start: false do
+  # Any test file re-runs itself.
+  watch(%r{^test/.+_test\.rb$})
 
-  # with Minitest::Spec
-  # watch(%r{^spec/(.*)_spec\.rb$})
-  # watch(%r{^lib/(.+)\.rb$})         { |m| "spec/#{m[1]}_spec.rb" }
-  # watch(%r{^spec/spec_helper\.rb$}) { 'spec' }
+  # Changing the test helper re-runs the whole suite.
+  watch("test/test_helper.rb") { "test" }
 
-  # Rails 4
-  # watch(%r{^app/(.+)\.rb$})                               { |m| "test/#{m[1]}_test.rb" }
-  # watch(%r{^app/controllers/application_controller\.rb$}) { 'test/controllers' }
-  # watch(%r{^app/controllers/(.+)_controller\.rb$})        { |m| "test/integration/#{m[1]}_test.rb" }
-  # watch(%r{^app/views/(.+)_mailer/.+})                    { |m| "test/mailers/#{m[1]}_mailer_test.rb" }
-  # watch(%r{^lib/(.+)\.rb$})                               { |m| "test/lib/#{m[1]}_test.rb" }
-  # watch(%r{^test/.+_test\.rb$})
-  # watch(%r{^test/test_helper\.rb$}) { 'test' }
+  # Routes and the shared layout affect every page.
+  watch("config/routes.rb")                       { "test/controllers" }
+  watch("app/views/layouts/application.html.erb") { "test/controllers" }
 
-  # Rails < 4
-  # watch(%r{^app/controllers/(.*)\.rb$}) { |m| "test/functional/#{m[1]}_test.rb" }
-  # watch(%r{^app/helpers/(.*)\.rb$})     { |m| "test/helpers/#{m[1]}_test.rb" }
-  # watch(%r{^app/models/(.*)\.rb$})      { |m| "test/unit/#{m[1]}_test.rb" }
+  # A controller or one of its views -> that controller's test.
+  watch(%r{^app/controllers/(.+)_controller\.rb$}) do |m|
+    "test/controllers/#{m[1]}_controller_test.rb"
+  end
+  watch(%r{^app/views/([^/]+)/.+\.html\.erb$}) do |m|
+    "test/controllers/#{m[1]}_controller_test.rb"
+  end
+
+  # Helpers are tested on their own and through the pages that use them.
+  watch(%r{^app/helpers/(.+)_helper\.rb$}) do |m|
+    ["test/helpers/#{m[1]}_helper_test.rb", "test/controllers"]
+  end
+
+  # Models and plain Ruby code in lib/.
+  watch(%r{^app/models/(.+)\.rb$}) { |m| "test/models/#{m[1]}_test.rb" }
+  watch(%r{^lib/(.+)\.rb$})        { |m| "test/lib/#{m[1]}_test.rb" }
+
+  # Core extensions loaded from initializers.
+  watch(%r{^config/initializers/.+\.rb$}) { "test" }
 end
