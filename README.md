@@ -55,13 +55,48 @@
 после 50 тестов Rails включает запуск в отдельных процессах, и на macOS
 он зависал.
 
+## Запускаемые примеры — ветка `chapter-4-demo`
+
+Кроме тестов, все примеры можно запустить и увидеть результат каждой строки,
+как в консоли. Rake-задачи выполняют файлы из `lib/tasks/chapter4/`
+по одному выражению (разбор через Prism) и подписывают результат:
+
+```
+"foo" + "bar"  # Соединение строк
+# => "foobar"
+puts "foo"  # Вывести строку на экран
+# >> foo
+# => nil
+nil.empty?
+# !! NoMethodError: undefined method 'empty?' for nil
+```
+
+`# =>` — значение выражения, `# >>` — что напечатано на экран,
+`# !!` — ошибка, которую показывает методичка.
+
+| Команда | Раздел | Файл |
+|---|---|---|
+| `bin/rails chapter4:strings` | 4.2 Строки и методы | `lib/tasks/chapter4/strings_and_methods.rb` |
+| `bin/rails chapter4:structures` | 4.3 Массивы, блоки, хэши, CSS | `lib/tasks/chapter4/data_structures.rb` |
+| `bin/rails chapter4:classes` | 4.4 Классы, наследование, контроллер, пользователь | `lib/tasks/chapter4/ruby_classes.rb` |
+| `bin/rails chapter4:all` | всё подряд | |
+
+## Guard
+
+Перенесён из лабораторной 3 (раздел 3.7): гемы `guard`/`guard-minitest`,
+`Guardfile`, фильтр backtrace. Изменение `lib/string_tools.rb` запускает
+`test/lib/string_tools_test.rb`, изменение `application_helper.rb` — тесты
+хелпера и страниц, изменение инициализаторов — все тесты.
+
 ## Запуск
 
 ```sh
 bundle install
 bin/rails test     # 52 tests, 185 assertions, 0 failures, 0 errors
 bin/rails server   # http://localhost:3000
-bin/rails test test/ruby_basics   # только примеры главы 4
+bin/rails test test/ruby_basics   # только примеры главы 4 (тесты)
+bin/rails chapter4:all            # примеры главы 4 с результатами
+bundle exec guard  # автозапуск тестов при изменении файлов (Enter — все тесты, Ctrl-D — выход)
 bin/rails console  # >> ExampleUser.new(name: "A", email: "a@b.c").formatted_email
 ```
 
