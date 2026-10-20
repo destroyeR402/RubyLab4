@@ -66,6 +66,9 @@ end
 group :test do
   # Colored RED/GREEN test output
   gem "minitest-reporters"
+  # Re-run the relevant tests automatically when files change
+  gem "guard"
+  gem "guard-minitest"
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem "capybara"
   gem "selenium-webdriver"
