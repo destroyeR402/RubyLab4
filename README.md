@@ -39,12 +39,29 @@
 
 Все упражнения проверяются тестами (`test/lib/string_tools_test.rb` и др.).
 
+## Примеры из методички — ветка `chapter-4-examples`
+
+Каждый пример из консольных сессий главы оформлен как тест с проверкой
+результата (`assert_equal`, `assert_output` для `puts`/`print`/`p`,
+`assert_raises` там, где в методичке показана ошибка):
+
+| Файл | Что проверяется |
+|---|---|
+| `test/ruby_basics/strings_and_methods_test.rb` | 4.2: комментарии, строки и интерполяция, `puts`/`print`, одинарные кавычки, `length`/`empty?`/`nil?`, `if`/`elsif`/`unless`, `&&`/`\|\|`/`!`, `!!nil`, три версии `string_message`, `full_title` |
+| `test/ruby_basics/data_structures_test.rb` | 4.3: `split`, индексы, `first`/`second`/`last`, сравнения, `sort`/`sort!`, `push`/`<<`/`join`, диапазоны, блоки `each`/`times`/`map`/`&:downcase`, случайный субдомен, хэши со строковыми и символьными ключами, вложенные хэши, `each` по хэшу, `inspect`/`p`, `stylesheet_link_tag` со скобками и без |
+| `test/ruby_basics/ruby_classes_test.rb` | 4.4: `String.new`, `Array.new`, `Hash.new(0)`, цепочка `superclass`, обе версии `Word`, `palindrome?`, `blank?`, иерархия `StaticPagesController` до `Object`, `controller.home`, `ExampleUser` |
+
+В `test/test_helper.rb` поднят порог параллельного запуска до 200 тестов:
+после 50 тестов Rails включает запуск в отдельных процессах, и на macOS
+он зависал.
+
 ## Запуск
 
 ```sh
 bundle install
-bin/rails test     # 14 tests, 29 assertions, 0 failures, 0 errors
+bin/rails test     # 52 tests, 185 assertions, 0 failures, 0 errors
 bin/rails server   # http://localhost:3000
+bin/rails test test/ruby_basics   # только примеры главы 4
 bin/rails console  # >> ExampleUser.new(name: "A", email: "a@b.c").formatted_email
 ```
 
